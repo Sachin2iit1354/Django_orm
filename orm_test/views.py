@@ -7,21 +7,24 @@ from django.http import HttpResponse
 from django.template import loader
 from rest_framework import status
 from . import serializers,models
-from .models import user_schema
-from .serializers import User,CommentSerializer,comment
+from .models import user_schema,Log
+from .serializers import User,CommentSerializer,comment,LogSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.decorators import action
+from datetime import timedelta
 # Create your views here.
 
 
 class Userviewset(viewsets.ModelViewSet):
     serializer_class=User
+    # x=user_schema.objects.all()
+    # obj.save()
     queryset=user_schema.objects.all()
-    # @action(detail=False, methods=['put'])
+    @action(detail=False, methods=['put'])
     def put(request, pk):
         user = user_schema.objects.get(pk=pk)
         serializer = User(instance=user, data=request.data)
@@ -45,3 +48,7 @@ class ListViewSet(viewsets.ModelViewSet):
     def detail(request):
         serializer=CommentSerializer(comment)
         return Response(serializer.data)
+    
+class LogViewSet(viewsets.ModelViewSet):
+    queryset = Log.objects.all()
+    serializer_class = LogSerializer

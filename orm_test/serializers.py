@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import user_schema
+from .models import user_schema,Log
 from rest_framework.response import Response
 from orm_test import models
 from datetime import datetime
+from datetime import time
 # from .views import session,Customers
 class Comment:
     def __init__(self, email, content, created=None):
@@ -15,15 +16,19 @@ comment = Comment(email='leila@example.com', content='foo bar')
 class User(serializers.ModelSerializer):
     class Meta:
         model=user_schema
-        fields=['id','name','add','email']
+        fields='__all__'
     def create(self,validated_data):
         question=user_schema.objects.create(
             id=validated_data['id'],
             name=validated_data['name'],
             add=validated_data['add'],
-            email=validated_data['email']
+            email=validated_data['email'],
+            log_time=validated_data['log_time'],
+            new_1=validated_data['new_1']
         )
         return question
+
+
     # def update(self, instance, validated_data):
     #     # return super().update(instance, validated_data)
     #     instance.id = validated_data.get('id', instance.id)
@@ -48,3 +53,7 @@ class CommentSerializer(serializers.Serializer):
         question.append(validated_data['content'])
         return question
     
+class LogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Log
+        fields = '__all__'
